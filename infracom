@@ -1,0 +1,72 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+def fac(x):
+	if x < 1:
+		return 1
+	res=x
+	while x>2:
+		x-=1
+		res*=x
+	return res
+# C(n,k) = n!/(k!*(n-k)!)
+def comb(n,k):
+	res = fac(n)/(fac(k)*fac(n-k))
+	return res
+# p = prob q tu quer
+# q = prob q tu n quer 
+# n = total de users
+# k = quant q tu quer
+# P(k) = C(n,k) * p^(k) * q^(n-k)
+def prob(n,k,p,q):
+	res = 0.0
+	res = comb(n,k)*(p**k)*(q**(n-k))
+	return res
+
+
+
+n=int(input('Digite o número de usuários conectados\n'))
+ex=[]
+ey=[]
+p=float(input('Digite a probabilidade de o usuário estar ativo como um numero entre 0 e 1:\n'))
+q=1-p
+r=int(input('Digite o requisito de taxa de dados de cada usuário em kbps:\n'))
+c=int(input('Digite a capacidade Total do enlace em kbps:\n'))
+print('*********	Considerando comutação por circuitos	*********')
+circ=0
+c2=c
+while c2>=r:
+	c2-=r
+	circ+=1
+print('o número máximo de usuários que podem ser atendidos simultaneamente pelo enlace é: ',circ)
+print('*********	Considerando comutação por pacotes	*********')
+proba = 0.0
+i=circ+1
+while i<=n:
+	proba+=prob(n,i,p,q)
+	i+=1
+print('A probabilidade da demanda da rede ser maior que a capacidade do enlace é: ',proba)
+i=0
+while i<=n:
+	ex.append(i)
+	ey.append(prob(n,i,p,q))
+	i+=1
+i=0
+ymax=0.0
+while i<=n:
+	if prob(n,i,p,q) > ymax:
+		ymax=prob(n,i,p,q)
+	i+=1
+ymax+=0.05
+if ymax>1:
+	ymax=1
+fotenha , grafico = plt.subplots()  # Create a figure containing a single axes.
+grafico.plot(ex,ey, color='#D70000', marker='o', linewidth=2, markersize=4)
+plt.xlabel('Usuários ativos')
+plt.ylabel('Probabilidade')
+plt.title('Usuários ativos X probabilidade')
+plt.axis([0,n,0,ymax])
+plt.xticks(range(0,n+1))
+plt.grid()
+#fotenha.savefig("test.png")
+plt.show()
