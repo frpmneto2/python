@@ -1,0 +1,7 @@
+
+while 2.0==2:
+	a=input('numero:')
+	try:
+		print(int(a))
+	except:
+		print('isso n eh um numero seu paspalho')
